@@ -74,6 +74,17 @@ namespace RaycasterEngine
                 Camera.Direction += settings.cameraRotationSpeed;
             else if (Keyboard.GetState().IsKeyDown(Keys.Q))
                 Camera.Direction -= settings.cameraRotationSpeed;
+            if (Camera.Direction > 360)
+            {
+                Camera.Direction -= (((int)Camera.Direction / 360) * 360);
+            }
+            else if (Camera.Direction < 0)
+            {
+                while (Camera.Direction < 0)
+                {
+                    Camera.Direction += 360;
+                }
+            }
 
 
             base.Update(gameTime);
