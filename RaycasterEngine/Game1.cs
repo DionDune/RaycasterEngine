@@ -30,6 +30,7 @@ namespace RaycasterEngine
             RasterizerState rs = new RasterizerState();
             rs.CullMode = CullMode.None;
             GraphicsDevice.RasterizerState = rs;
+            
 
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
@@ -44,7 +45,6 @@ namespace RaycasterEngine
             Camera = new Camera(settings, new Vector2(50, 50));
 
             _basicEffect = new BasicEffect(GraphicsDevice) { VertexColorEnabled = true };
-
             base.Initialize();
         }
 
@@ -78,31 +78,20 @@ namespace RaycasterEngine
             DrawLine(spritebatch, Point1, DistanceValue, Angle, Color, Thickness);
         }
         
-        public static void DrawTriangleOther(BasicEffect _basicEffect, GraphicsDevice GraphicsDevice, Vector3 Pos1, Vector3 Pos2, Vector3 Pos3, Color tint)
+        public static void DrawTriangle(BasicEffect _basicEffect, GraphicsDevice GraphicsDevice, Vector3 Pos1, Vector3 Pos2, Vector3 Pos3, Color tint)
         {
             VertexPositionColor[] _vertexPositionColors = new[]
             {
-                new VertexPositionColor(Pos1, Color.Green),
-                new VertexPositionColor(Pos2, Color.Green),
-                new VertexPositionColor(Pos3, Color.Green)
+                new VertexPositionColor(Pos1, tint),
+                new VertexPositionColor(Pos2, tint),
+                new VertexPositionColor(Pos3, tint)
             };
 
             _basicEffect.World = Matrix.CreateOrthographicOffCenter(
                 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, 0, 0, 1);
 
-
-
-
-            EffectTechnique effectTechnique = _basicEffect.Techniques[0];
-            EffectPassCollection effectPassCollection = effectTechnique.Passes;
-
-            foreach (EffectPass pass in effectPassCollection)
-            {
-                pass.Apply();
-
-                GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList,
-                    _vertexPositionColors, 0, 1);
-            }
+            _basicEffect.CurrentTechnique.Passes[0].Apply();
+            GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, _vertexPositionColors, 0, 1);
         }
 
 
@@ -145,6 +134,10 @@ namespace RaycasterEngine
                 settings.cameraRenderWireFrames = !settings.cameraRenderWireFrames;
             if (Keyboard.GetState().IsKeyDown(Keys.Y))
                 settings.cameraRenderBaseRays = !settings.cameraRenderBaseRays;
+
+
+
+            //Grid.SolidSlots[0].co
 
 
             base.Update(gameTime);

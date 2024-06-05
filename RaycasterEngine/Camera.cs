@@ -61,9 +61,9 @@ namespace RaycasterEngine
                     
                         foreach (List<Point> Face in Faces)
                         { 
-                            Game1.DrawTriangleOther(Game1._basicEffect, GraphicsDevice, new Vector3(Face[0].X, Face[0].Y, 0),
+                            Game1.DrawTriangle(Game1._basicEffect, GraphicsDevice, new Vector3(Face[0].X, Face[0].Y, 0),
                                                                                         new Vector3(Face[1].X, Face[1].Y, 0),
-                                                                                        new Vector3(Face[2].X, Face[2].Y, 0), Color.Red);
+                                                                                        new Vector3(Face[2].X, Face[2].Y, 0), Slot.Color);
                         }
                     }
             }
