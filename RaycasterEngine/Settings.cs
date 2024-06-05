@@ -13,6 +13,8 @@ namespace RaycasterEngine
         public float cameraRenderDistance { get; set; }
         public float cameraRenderPointInterval { get; set; }
         public bool cameraRenderRayEnd { get; set; }
+        public bool cameraRenderWireFrames { get; set; }
+        public bool cameraRenderBaseRays { get; set; }
         public float cameraMovementSpeed { get; set; }
         public float cameraRotationSpeed { get; set; }
         
@@ -28,6 +30,9 @@ namespace RaycasterEngine
             cameraRenderRayEnd = true;
             cameraMovementSpeed = 0.2f;
             cameraRotationSpeed = 1.2f;
+
+            cameraRenderBaseRays = true;
+            cameraRenderWireFrames = true;
             
 
             gridDimentions = new Point(200, 200);

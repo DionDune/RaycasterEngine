@@ -71,25 +71,32 @@ namespace RaycasterEngine
                     // RENDER SOLID
                     if (Slot != null)
                     {
-                        HalfRenderHeight = (int)( 180F / (Vector2.Distance(WorldPosition, CurrentPosition) / 100) ) / 2;
-                        ScreenPosY = (Screen.Dimentions.Y / 2) - HalfRenderHeight;
-
-                        spriteBatch.Draw(Game1.TextureWhite, new Rectangle(ScreenPosX, ScreenPosY, 
-                                                                            Screen.RayWidth, HalfRenderHeight * 2),
-                                                                            Slot.Color);
-
-
-                        List<Point> CornerScreenPositions = GetCornerScreenPositions(Screen, Slot);
-                        foreach (Point CornerScreenPos in CornerScreenPositions)
+                        if (settings.cameraRenderBaseRays)
                         {
-                            foreach (Point OtherCornerPos in CornerScreenPositions)
+                            HalfRenderHeight = (int)(180F / (Vector2.Distance(WorldPosition, CurrentPosition) / 100)) / 2;
+                            ScreenPosY = (Screen.Dimentions.Y / 2) - HalfRenderHeight;
+
+                            spriteBatch.Draw(Game1.TextureWhite, new Rectangle(ScreenPosX, ScreenPosY,
+                                                                                Screen.RayWidth, HalfRenderHeight * 2),
+                                                                                Slot.Color);
+                        }
+                        
+
+                        if (settings.cameraRenderWireFrames)
+                        {
+                            List<Point> CornerScreenPositions = GetCornerScreenPositions(Screen, Slot);
+                            foreach (Point CornerScreenPos in CornerScreenPositions)
                             {
-                                if (OtherCornerPos != CornerScreenPos)
+                                foreach (Point OtherCornerPos in CornerScreenPositions)
                                 {
-                                    Game1.DrawLineBetween(spriteBatch, CornerScreenPos.ToVector2(), OtherCornerPos.ToVector2(), Color.Pink, 1f);
+                                    if (OtherCornerPos != CornerScreenPos)
+                                    {
+                                        Game1.DrawLineBetween(spriteBatch, CornerScreenPos.ToVector2(), OtherCornerPos.ToVector2(), Color.Pink, 1f);
+                                    }
                                 }
                             }
                         }
+                        
 
 
                         return;
