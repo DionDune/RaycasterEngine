@@ -79,6 +79,17 @@ namespace RaycasterEngine
                                                                             Slot.Color);
 
 
+                        List<Point> CornerScreenPositions = GetCornerScreenPositions(Screen, Slot);
+                        foreach (Point CornerScreenPos in CornerScreenPositions)
+                        {
+                            spriteBatch.Draw(Game1.TextureWhite, new Rectangle(
+                                CornerScreenPos.X,
+                                CornerScreenPos.Y,
+                                5, 5 ), 
+                                Color.Pink);
+                        }
+
+
                         return;
                     }
 
@@ -104,5 +115,42 @@ namespace RaycasterEngine
                 }
             }
         }
+
+        private List<Point> GetCornerScreenPositions(Screen Screen, GridSlot Slot)
+        {
+            List<Point> CornerScreenPositions = new List<Point>();
+            List<Point> Corners = new List<Point>()
+            {
+                new Point(Slot.Position.X, Slot.Position.Y),
+                new Point(Slot.Position.X + 1, Slot.Position.Y),
+                new Point(Slot.Position.X + 1, Slot.Position.Y + 1),
+                new Point(Slot.Position.X, Slot.Position.Y + 1)
+            };
+
+
+            foreach (Point Corner in Corners)
+            {
+                float WorldAngle = (float)Math.Atan2(Corner.Y - WorldPosition.Y, Corner.X - WorldPosition.X) * (float)(180 / Math.PI);
+                float ReletiveAngle = WorldAngle - Direction;
+                ReletiveAngle /= FOV;
+
+                float HalfRenderHeight = (int)(180F / (Vector2.Distance(WorldPosition, Corner.ToVector2()) / 100)) / 2;
+                float ScreenPosY = (Screen.Dimentions.Y / 2) - HalfRenderHeight;
+
+                // Top
+                CornerScreenPositions.Add(new Point(
+                    (int)(Screen.Dimentions.X * ReletiveAngle),
+                    (Screen.Dimentions.Y / 2) - (int)HalfRenderHeight
+                    ));
+                // Bottom
+                CornerScreenPositions.Add(new Point(
+                    (int)(Screen.Dimentions.X * ReletiveAngle),
+                    (Screen.Dimentions.Y / 2) + (int)HalfRenderHeight
+                    ));
+            }
+
+
+            return CornerScreenPositions;
+        } 
     }
 }
