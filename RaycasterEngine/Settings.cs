@@ -11,6 +11,7 @@ namespace RaycasterEngine
     {
         public int cameraFOV { get; set; }
         public float cameraRenderDistance { get; set; }
+        public float cameraRenderPointInterval { get; set; }
         public bool cameraRenderRayEnd { get; set; }
         public float cameraMovementSpeed { get; set; }
         public float cameraRotationSpeed { get; set; }
@@ -23,6 +24,7 @@ namespace RaycasterEngine
         {
             cameraFOV = 120;
             cameraRenderDistance = 150;
+            cameraRenderPointInterval = 0.1f;
             cameraRenderRayEnd = true;
             cameraMovementSpeed = 0.2f;
             cameraRotationSpeed = 1.2f;

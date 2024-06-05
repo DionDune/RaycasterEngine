@@ -25,7 +25,7 @@ namespace RaycasterEngine
             Direction = 0;
 
             RenderDistance = settings.cameraRenderDistance;
-            RayJumpDistance = 0.1f;
+            RayJumpDistance = settings.cameraRenderPointInterval;
         }
 
 
