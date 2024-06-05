@@ -25,17 +25,17 @@ namespace RaycasterEngine
         public Settings()
         {
             cameraFOV = 120;
-            cameraRenderDistance = 150;
-            cameraRenderPointInterval = 0.1f;
+            cameraRenderDistance = 490;
+            cameraRenderPointInterval = 1f;
             cameraRenderRayEnd = true;
-            cameraMovementSpeed = 0.2f;
+            cameraMovementSpeed = 0.5f;
             cameraRotationSpeed = 1.2f;
 
             cameraRenderBaseRays = true;
             cameraRenderWireFrames = true;
             
 
-            gridDimentions = new Point(200, 200);
+            gridDimentions = new Point(500, 500);
         }
     }
 }
