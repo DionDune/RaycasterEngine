@@ -10,6 +10,7 @@ namespace RaycasterEngine
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+        public static BasicEffect _basicEffect;
 
         Random random;
         public static Texture2D TextureWhite;
@@ -26,6 +27,10 @@ namespace RaycasterEngine
             _graphics.PreferredBackBufferHeight = 1000;
             _graphics.ApplyChanges();
 
+            RasterizerState rs = new RasterizerState();
+            rs.CullMode = CullMode.None;
+            GraphicsDevice.RasterizerState = rs;
+
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
@@ -37,6 +42,8 @@ namespace RaycasterEngine
             Grid = new Grid(settings.gridDimentions);
             Screen = new Screen(new Point(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight), _spriteBatch);
             Camera = new Camera(settings, new Vector2(50, 50));
+
+            _basicEffect = new BasicEffect(GraphicsDevice) { VertexColorEnabled = true };
 
             base.Initialize();
         }
@@ -69,6 +76,33 @@ namespace RaycasterEngine
             float DistanceValue = Math.Abs(Vector2.Distance(Point1, Point2));
 
             DrawLine(spritebatch, Point1, DistanceValue, Angle, Color, Thickness);
+        }
+        
+        public static void DrawTriangleOther(BasicEffect _basicEffect, GraphicsDevice GraphicsDevice, Vector3 Pos1, Vector3 Pos2, Vector3 Pos3, Color tint)
+        {
+            VertexPositionColor[] _vertexPositionColors = new[]
+            {
+                new VertexPositionColor(Pos1, Color.Green),
+                new VertexPositionColor(Pos2, Color.Green),
+                new VertexPositionColor(Pos3, Color.Green)
+            };
+
+            _basicEffect.World = Matrix.CreateOrthographicOffCenter(
+                0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height, 0, 0, 1);
+
+
+
+
+            EffectTechnique effectTechnique = _basicEffect.Techniques[0];
+            EffectPassCollection effectPassCollection = effectTechnique.Passes;
+
+            foreach (EffectPass pass in effectPassCollection)
+            {
+                pass.Apply();
+
+                GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList,
+                    _vertexPositionColors, 0, 1);
+            }
         }
 
 
@@ -123,7 +157,7 @@ namespace RaycasterEngine
             _spriteBatch.Begin();
 
 
-            Camera.CastRays(_spriteBatch, settings, Screen, Grid);
+            Camera.CastRays(_spriteBatch, GraphicsDevice, settings, Screen, Grid);
 
 
             _spriteBatch.End();

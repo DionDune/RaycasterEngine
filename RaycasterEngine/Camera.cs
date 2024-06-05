@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -29,7 +30,7 @@ namespace RaycasterEngine
         }
 
 
-        public void CastRays(SpriteBatch spriteBatch, Settings settings, Screen Screen, Grid Grid)
+        public void CastRays(SpriteBatch spriteBatch, GraphicsDevice GraphicsDevice, Settings settings, Screen Screen, Grid Grid)
         {
             int RayCount = Screen.RayCount;
             float RayAngleJump = (float)FOV / RayCount;
@@ -37,26 +38,40 @@ namespace RaycasterEngine
 
             if (settings.cameraWireFrameEfficientMode)
             {
-                foreach (GridSlot Slot in Grid.SolidSlots)
-                {
-                    List<Point> CornerScreenPositions = GetCornerScreenPositions(Screen, Slot);
-                    foreach (Point CornerScreenPos in CornerScreenPositions)
+                if (settings.cameraRenderWireFrames)
+                    foreach (GridSlot Slot in Grid.SolidSlots)
                     {
-                        foreach (Point OtherCornerPos in CornerScreenPositions)
+                        List<Point> CornerScreenPositions = GetCornerScreenPositions(Screen, Slot);
+                        foreach (Point CornerScreenPos in CornerScreenPositions)
                         {
-                            if (OtherCornerPos != CornerScreenPos)
+                            foreach (Point OtherCornerPos in CornerScreenPositions)
                             {
-                                Game1.DrawLineBetween(spriteBatch, CornerScreenPos.ToVector2(), OtherCornerPos.ToVector2(), Color.Pink, 1f);
+                                if (OtherCornerPos != CornerScreenPos)
+                                {
+                                    Game1.DrawLineBetween(spriteBatch, CornerScreenPos.ToVector2(), OtherCornerPos.ToVector2(), Color.Pink, 1f);
+                                }
                             }
                         }
                     }
-                }
+
+                if (settings.cameraRenderFaces)
+                    foreach (GridSlot Slot in Grid.SolidSlots)
+                    {
+                        List<List<Point>> Faces = GetFaces(Screen, Slot);
+                    
+                        foreach (List<Point> Face in Faces)
+                        { 
+                            Game1.DrawTriangleOther(Game1._basicEffect, GraphicsDevice, new Vector3(Face[0].X, Face[0].Y, 0),
+                                                                                        new Vector3(Face[1].X, Face[1].Y, 0),
+                                                                                        new Vector3(Face[2].X, Face[2].Y, 0), Color.Red);
+                        }
+                    }
             }
             else
             {
                 for (int i = 0; i < RayCount; i++)
                 {
-                    CastRay(spriteBatch, settings, Screen, Grid, (Direction + CurrentAngle), i * Screen.RayWidth);
+                    CastRay(spriteBatch, settings, Screen, Grid, Direction + CurrentAngle, i * Screen.RayWidth);
 
                     CurrentAngle += RayAngleJump;
                 }
@@ -184,6 +199,97 @@ namespace RaycasterEngine
 
 
             return CornerScreenPositions;
-        } 
+        }
+        private List<List<Point>> GetFaces(Screen Screen, GridSlot Slot)
+        {
+            List<Point> CornerScreenPositions = new List<Point>();
+            List<List<Point>> FaceScreenPositions = new List<List<Point>>();
+            List<Point> Corners = new List<Point>()
+            {
+                new Point(Slot.Position.X, Slot.Position.Y),
+                new Point(Slot.Position.X + 1, Slot.Position.Y),
+                new Point(Slot.Position.X + 1, Slot.Position.Y + 1),
+                new Point(Slot.Position.X, Slot.Position.Y + 1)
+            };
+            List<List<Vector3>> Faces = new List<List<Vector3>>()
+            {
+                // Front 1
+                new List<Vector3>()
+                {
+                    new Vector3(Slot.Position.X + 1, Slot.Position.Y, -1),
+                    new Vector3(Slot.Position.X, Slot.Position.Y, -1),
+                    new Vector3(Slot.Position.X, Slot.Position.Y, +1)
+                },
+                // Front 2
+                new List<Vector3>
+                {
+                    new Vector3(Slot.Position.X + 1, Slot.Position.Y, - 1),
+                    new Vector3(Slot.Position.X, Slot.Position.Y, +1),
+                    new Vector3(Slot.Position.X + 1 , Slot.Position.Y, +1)
+                },
+                //Left 1
+                new List<Vector3>()
+                {
+                    new Vector3(Slot.Position.X, Slot.Position.Y, -1),
+                    new Vector3(Slot.Position.X, Slot.Position.Y + 1, -1),
+                    new Vector3(Slot.Position.X, Slot.Position.Y, +1)
+                },
+                //Left 2
+                new List<Vector3>()
+                {
+                    new Vector3(Slot.Position.X, Slot.Position.Y, +1),
+                    new Vector3(Slot.Position.X, Slot.Position.Y + 1, -1),
+                    new Vector3(Slot.Position.X, Slot.Position.Y + 1, +1)
+                },
+                //Back 1
+                new List<Vector3>()
+                {
+                    new Vector3(Slot.Position.X, Slot.Position.Y + 1, -1),
+                    new Vector3(Slot.Position.X + 1, Slot.Position.Y + 1, +1),
+                    new Vector3(Slot.Position.X, Slot.Position.Y + 1, +1)
+                },
+                //Back 2
+                new List<Vector3>()
+                {
+                    new Vector3(Slot.Position.X, Slot.Position.Y + 1, -1),
+                    new Vector3(Slot.Position.X + 1, Slot.Position.Y + 1, +1),
+                    new Vector3(Slot.Position.X, Slot.Position.Y + 1, +1)
+                },
+                //Right 1
+                new List<Vector3>()
+                {
+                    new Vector3(Slot.Position.X + 1, Slot.Position.Y + 1, -1),
+                    new Vector3(Slot.Position.X + 1, Slot.Position.Y, -1),
+                    new Vector3(Slot.Position.X + 1, Slot.Position.Y + 1, +1)
+                },
+                //Right 2
+                new List<Vector3>()
+                {
+                    new Vector3(Slot.Position.X + 1, Slot.Position.Y + 1, +1),
+                    new Vector3(Slot.Position.X + 1, Slot.Position.Y, -1),
+                    new Vector3(Slot.Position.X + 1, Slot.Position.Y, +1)
+                }
+            };
+            foreach (List<Vector3> Face in Faces)
+            {
+                FaceScreenPositions.Add(new List<Point>());
+
+                foreach (Vector3 Vert in Face)
+                {
+                    float WorldAngle = (float)Math.Atan2(Vert.Y - WorldPosition.Y, Vert.X - WorldPosition.X) * (float)(180 / Math.PI);
+                    float ReletiveAngle = WorldAngle - Direction;
+                    ReletiveAngle /= FOV;
+                    float HalfRenderHeight = (int)(180F / (Vector2.Distance(WorldPosition, new Vector2(Vert.X, Vert.Y)) / 100)) / 2;
+
+                    FaceScreenPositions.Last().Add(new Point(
+                        (int)(Screen.Dimentions.X * ReletiveAngle),
+                        (Screen.Dimentions.Y / 2) + (int)(HalfRenderHeight * Vert.Z)
+                        ));
+                }
+                
+            }
+
+            return FaceScreenPositions;
+        }
     }
 }
