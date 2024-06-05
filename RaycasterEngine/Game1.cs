@@ -81,13 +81,13 @@ namespace RaycasterEngine
 
             if (Keyboard.GetState().IsKeyDown(Keys.W))
             {
-                Camera.WorldPosition += new Vector2(settings.cameraMovementSpeed * (float)Math.Cos((Camera.Direction + 45) * (Math.PI / 180)),
-                                                    settings.cameraMovementSpeed * (float)Math.Sin((Camera.Direction + 45) * (Math.PI / 180)));
+                Camera.WorldPosition += new Vector2(settings.cameraMovementSpeed * (float)Math.Cos((Camera.Direction + (Camera.FOV / 2)) * (Math.PI / 180)),
+                                                    settings.cameraMovementSpeed * (float)Math.Sin((Camera.Direction + (Camera.FOV / 2)) * (Math.PI / 180)));
             }
             else if (Keyboard.GetState().IsKeyDown(Keys.S))
             {
-                Camera.WorldPosition -= new Vector2(settings.cameraMovementSpeed * (float)Math.Cos((Camera.Direction + 45) * (Math.PI / 180)),
-                                                    settings.cameraMovementSpeed * (float)Math.Sin((Camera.Direction + 45) * (Math.PI / 180)));
+                Camera.WorldPosition -= new Vector2(settings.cameraMovementSpeed * (float)Math.Cos((Camera.Direction + (Camera.FOV / 2)) * (Math.PI / 180)),
+                                                    settings.cameraMovementSpeed * (float)Math.Sin((Camera.Direction + (Camera.FOV / 2)) * (Math.PI / 180)));
             }
 
             if (Keyboard.GetState().IsKeyDown(Keys.E))
