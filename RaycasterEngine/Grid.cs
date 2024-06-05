@@ -10,6 +10,7 @@ namespace RaycasterEngine
     internal class Grid
     {
         public List<List<GridSlot>> Slots;
+        public List<GridSlot> SolidSlots;
         public Point Dimentions { get; set; }
 
 
@@ -21,6 +22,7 @@ namespace RaycasterEngine
 
 
             Slots = new List<List<GridSlot>>();
+            SolidSlots = new List<GridSlot>();
             for (int y = 0; y < Dimentions.Y; y++)
             {
                 Slots.Add(new List<GridSlot>());
@@ -30,6 +32,7 @@ namespace RaycasterEngine
                     {
                         Color Color = Color.Red;
                         Slots.Last().Add(new GridSlot(new Point(x, y), Color));
+                        SolidSlots.Add(Slots.Last().Last());
                     }
                     else
                     {
@@ -39,7 +42,11 @@ namespace RaycasterEngine
             }
             for (int y = 0; y < 10; y++)
                 for (int x = 0; x < 10; x++)
+                {
                     Slots[50 + y][50 + x] = new GridSlot(new Point(50 + x, 50 + y), Color.Turquoise);
+                    SolidSlots.Add(Slots[50 + y][50 + x]);
+                }
+                    
         }
     }
     internal class GridSlot

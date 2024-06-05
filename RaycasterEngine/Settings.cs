@@ -17,15 +17,16 @@ namespace RaycasterEngine
         public bool cameraRenderBaseRays { get; set; }
         public float cameraMovementSpeed { get; set; }
         public float cameraRotationSpeed { get; set; }
-        
 
+        public bool cameraWireFrameEfficientMode { get; set; }
+        
         public Point gridDimentions { get; set; }
 
 
         public Settings()
         {
             cameraFOV = 120;
-            cameraRenderDistance = 490;
+            cameraRenderDistance = 5000;
             cameraRenderPointInterval = 1f;
             cameraRenderRayEnd = true;
             cameraMovementSpeed = 0.5f;
@@ -33,9 +34,10 @@ namespace RaycasterEngine
 
             cameraRenderBaseRays = true;
             cameraRenderWireFrames = true;
-            
+            cameraWireFrameEfficientMode = true;
 
-            gridDimentions = new Point(500, 500);
+
+            gridDimentions = new Point(1000, 1000);
         }
     }
 }

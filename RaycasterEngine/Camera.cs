@@ -35,12 +35,33 @@ namespace RaycasterEngine
             float RayAngleJump = (float)FOV / RayCount;
             float CurrentAngle = 0;
 
-            for (int i = 0; i < RayCount; i++)
+            if (settings.cameraWireFrameEfficientMode)
             {
-                CastRay(spriteBatch, settings, Screen, Grid, (Direction + CurrentAngle) , i * Screen.RayWidth);
-
-                CurrentAngle += RayAngleJump;
+                foreach (GridSlot Slot in Grid.SolidSlots)
+                {
+                    List<Point> CornerScreenPositions = GetCornerScreenPositions(Screen, Slot);
+                    foreach (Point CornerScreenPos in CornerScreenPositions)
+                    {
+                        foreach (Point OtherCornerPos in CornerScreenPositions)
+                        {
+                            if (OtherCornerPos != CornerScreenPos)
+                            {
+                                Game1.DrawLineBetween(spriteBatch, CornerScreenPos.ToVector2(), OtherCornerPos.ToVector2(), Color.Pink, 1f);
+                            }
+                        }
+                    }
+                }
             }
+            else
+            {
+                for (int i = 0; i < RayCount; i++)
+                {
+                    CastRay(spriteBatch, settings, Screen, Grid, (Direction + CurrentAngle), i * Screen.RayWidth);
+
+                    CurrentAngle += RayAngleJump;
+                }
+            }
+            
         }
         private void CastRay(SpriteBatch spriteBatch, Settings settings, Screen Screen, Grid Grid, float Angle, int ScreenPosX)
         {
@@ -143,19 +164,22 @@ namespace RaycasterEngine
                 float ReletiveAngle = WorldAngle - Direction;
                 ReletiveAngle /= FOV;
 
-                float HalfRenderHeight = (int)(180F / (Vector2.Distance(WorldPosition, Corner.ToVector2()) / 100)) / 2;
-                float ScreenPosY = (Screen.Dimentions.Y / 2) - HalfRenderHeight;
+                if (ReletiveAngle >= 0 && ReletiveAngle <= 1)
+                {
+                    float HalfRenderHeight = (int)(180F / (Vector2.Distance(WorldPosition, Corner.ToVector2()) / 100)) / 2;
+                    float ScreenPosY = (Screen.Dimentions.Y / 2) - HalfRenderHeight;
 
-                // Top
-                CornerScreenPositions.Add(new Point(
-                    (int)(Screen.Dimentions.X * ReletiveAngle),
-                    (Screen.Dimentions.Y / 2) - (int)HalfRenderHeight
-                    ));
-                // Bottom
-                CornerScreenPositions.Add(new Point(
-                    (int)(Screen.Dimentions.X * ReletiveAngle),
-                    (Screen.Dimentions.Y / 2) + (int)HalfRenderHeight
-                    ));
+                    // Top
+                    CornerScreenPositions.Add(new Point(
+                        (int)(Screen.Dimentions.X * ReletiveAngle),
+                        (Screen.Dimentions.Y / 2) - (int)HalfRenderHeight
+                        ));
+                    // Bottom
+                    CornerScreenPositions.Add(new Point(
+                        (int)(Screen.Dimentions.X * ReletiveAngle),
+                        (Screen.Dimentions.Y / 2) + (int)HalfRenderHeight
+                        ));
+                }
             }
 
 
