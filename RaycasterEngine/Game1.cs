@@ -134,6 +134,8 @@ namespace RaycasterEngine
                 settings.cameraRenderWireFrames = !settings.cameraRenderWireFrames;
             if (Keyboard.GetState().IsKeyDown(Keys.Y))
                 settings.cameraRenderBaseRays = !settings.cameraRenderBaseRays;
+            if (Keyboard.GetState().IsKeyDown(Keys.F))
+                settings.cameraFaceRenderFast = !settings.cameraFaceRenderFast;
 
 
 
