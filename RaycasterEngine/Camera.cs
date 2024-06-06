@@ -1,7 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Diagnostics.Metrics;
 using System.Linq;
 using System.Text;
@@ -175,14 +177,16 @@ namespace RaycasterEngine
 
             foreach (Point Corner in Corners)
             {
+                float AngleOffset = 360 - Direction;
+
                 float WorldAngle = (float)Math.Atan2(Corner.Y - WorldPosition.Y, Corner.X - WorldPosition.X) * (float)(180 / Math.PI);
-                float ReletiveAngle = WorldAngle - Direction;
+                //float ReletiveAngle = WorldAngle - Direction;
+                float ReletiveAngle = WorldAngle + AngleOffset;
                 ReletiveAngle /= FOV;
 
-                if (ReletiveAngle >= 0 && ReletiveAngle <= 1)
+                if (ReletiveAngle >= 0 && ReletiveAngle <= 1 || true)
                 {
                     float HalfRenderHeight = (int)(180F / (Vector2.Distance(WorldPosition, Corner.ToVector2()) / 100)) / 2;
-                    float ScreenPosY = (Screen.Dimentions.Y / 2) - HalfRenderHeight;
 
                     // Top
                     CornerScreenPositions.Add(new Point(
@@ -195,22 +199,26 @@ namespace RaycasterEngine
                         (Screen.Dimentions.Y / 2) + (int)HalfRenderHeight
                         ));
                 }
+
+                if (Keyboard.GetState().IsKeyDown(Keys.H))
+                {
+                    Debug.Write($"World Angle: {WorldAngle}\n");
+                    Debug.Write($"Direction: {Direction}\n\n");
+                }
             }
 
+            if (Keyboard.GetState().IsKeyDown(Keys.G))
+            {
+                foreach (Point Corner in CornerScreenPositions)
+                    Debug.Write($"{Corner.X}:{Corner.Y} -  - ");
+                Debug.WriteLine("");
+            }
 
             return CornerScreenPositions;
         }
         private List<List<Point>> GetFaces(Screen Screen, GridSlot Slot)
         {
-            List<Point> CornerScreenPositions = new List<Point>();
             List<List<Point>> FaceScreenPositions = new List<List<Point>>();
-            List<Point> Corners = new List<Point>()
-            {
-                new Point(Slot.Position.X, Slot.Position.Y),
-                new Point(Slot.Position.X + 1, Slot.Position.Y),
-                new Point(Slot.Position.X + 1, Slot.Position.Y + 1),
-                new Point(Slot.Position.X, Slot.Position.Y + 1)
-            };
             List<List<Vector3>> Faces = new List<List<Vector3>>()
             {
                 // Front 1

@@ -50,7 +50,9 @@ namespace RaycasterEngine
                         Slots[50 + y][50 + x] = new GridSlot(new Point(50 + x, 50 + y), Color.Turquoise);
                         SolidSlots.Add(Slots[50 + y][50 + x]);
                     }
-            }   
+            }
+
+            SolidSlots.Add(new GridSlot(new Point(100, 100), Color.Purple));
         }
     }
     internal class GridSlot
