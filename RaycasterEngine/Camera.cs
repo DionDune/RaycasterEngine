@@ -221,13 +221,7 @@ namespace RaycasterEngine
                 List<Point> CornerScreenPositions = GetCornerScreenPositions(Screen, Slot);
                 foreach (Point CornerScreenPos in CornerScreenPositions)
                 {
-                    foreach (Point OtherCornerPos in CornerScreenPositions)
-                    {
-                        if (OtherCornerPos != CornerScreenPos)
-                        {
-                            Game1.DrawLineBetween(spriteBatch, CornerScreenPos.ToVector2(), OtherCornerPos.ToVector2(), Color.Pink, 1f);
-                        }
-                    }
+                    spriteBatch.Draw(Game1.TextureWhite, new Rectangle(CornerScreenPos.X, CornerScreenPos.Y, 5, 5), Slot.Color);
                 }
             }
         }
