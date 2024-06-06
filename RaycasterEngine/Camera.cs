@@ -251,8 +251,8 @@ namespace RaycasterEngine
                 new List<Vector3>()
                 {
                     new Vector3(Slot.Position.X, Slot.Position.Y + 1, -1),
-                    new Vector3(Slot.Position.X + 1, Slot.Position.Y + 1, +1),
-                    new Vector3(Slot.Position.X, Slot.Position.Y + 1, +1)
+                    new Vector3(Slot.Position.X + 1, Slot.Position.Y + 1, -1),
+                    new Vector3(Slot.Position.X + 1, Slot.Position.Y + 1, +1)
                 },
                 //Back 2
                 new List<Vector3>()
