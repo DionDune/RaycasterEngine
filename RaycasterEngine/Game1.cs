@@ -42,7 +42,7 @@ namespace RaycasterEngine
             settings = new Settings();
             Grid = new Grid(settings);
             Screen = new Screen(new Point(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight), _spriteBatch);
-            Camera = new Camera(settings, new Vector2(50, 50));
+            Camera = new Camera(settings, new Vector2(10, 10));
 
             _basicEffect = new BasicEffect(GraphicsDevice) { VertexColorEnabled = true };
             base.Initialize();
