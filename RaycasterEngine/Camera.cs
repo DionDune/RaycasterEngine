@@ -63,7 +63,8 @@ namespace RaycasterEngine
                     
                         foreach (List<Point> Face in Faces)
                         { 
-                            Game1.DrawTriangle(Game1._basicEffect, GraphicsDevice, new Vector3(Face[0].X, Face[0].Y, 0),
+                            if (Face.Count == 3)
+                                Game1.DrawTriangle(Game1._basicEffect, GraphicsDevice, new Vector3(Face[0].X, Face[0].Y, 0),
                                                                                         new Vector3(Face[1].X, Face[1].Y, 0),
                                                                                         new Vector3(Face[2].X, Face[2].Y, 0), Slot.Color);
                         }
@@ -177,14 +178,24 @@ namespace RaycasterEngine
 
             foreach (Point Corner in Corners)
             {
-                float AngleOffset = 360 - Direction;
+                float AngleOffset;
+                float WorldAngle = (float)Math.Atan2(Corner.Y - WorldPosition.Y, Corner.X - WorldPosition.X) * (float)(180 / Math.PI); ;
+                float ReletiveAngle;
 
-                float WorldAngle = (float)Math.Atan2(Corner.Y - WorldPosition.Y, Corner.X - WorldPosition.X) * (float)(180 / Math.PI);
-                //float ReletiveAngle = WorldAngle - Direction;
-                float ReletiveAngle = WorldAngle + AngleOffset;
+                if (WorldAngle < Direction)
+                {
+                    AngleOffset = 360 - Direction;
+                    ReletiveAngle = WorldAngle + AngleOffset;
+                }
+                else
+                {
+                    AngleOffset = WorldAngle - Direction;
+                    ReletiveAngle = AngleOffset;
+                }
                 ReletiveAngle /= FOV;
 
-                if (ReletiveAngle >= 0 && ReletiveAngle <= 1 || true)
+
+                if (ReletiveAngle >= 0 && ReletiveAngle <= 1)
                 {
                     float HalfRenderHeight = (int)(180F / (Vector2.Distance(WorldPosition, Corner.ToVector2()) / 100)) / 2;
 
@@ -199,19 +210,6 @@ namespace RaycasterEngine
                         (Screen.Dimentions.Y / 2) + (int)HalfRenderHeight
                         ));
                 }
-
-                if (Keyboard.GetState().IsKeyDown(Keys.H))
-                {
-                    Debug.Write($"World Angle: {WorldAngle}\n");
-                    Debug.Write($"Direction: {Direction}\n\n");
-                }
-            }
-
-            if (Keyboard.GetState().IsKeyDown(Keys.G))
-            {
-                foreach (Point Corner in CornerScreenPositions)
-                    Debug.Write($"{Corner.X}:{Corner.Y} -  - ");
-                Debug.WriteLine("");
             }
 
             return CornerScreenPositions;
@@ -284,15 +282,32 @@ namespace RaycasterEngine
 
                 foreach (Vector3 Vert in Face)
                 {
+                    float AngleOffset;
                     float WorldAngle = (float)Math.Atan2(Vert.Y - WorldPosition.Y, Vert.X - WorldPosition.X) * (float)(180 / Math.PI);
-                    float ReletiveAngle = WorldAngle - Direction;
-                    ReletiveAngle /= FOV;
-                    float HalfRenderHeight = (int)(180F / (Vector2.Distance(WorldPosition, new Vector2(Vert.X, Vert.Y)) / 100)) / 2;
+                    float ReletiveAngle;
 
-                    FaceScreenPositions.Last().Add(new Point(
-                        (int)(Screen.Dimentions.X * ReletiveAngle),
-                        (Screen.Dimentions.Y / 2) + (int)(HalfRenderHeight * Vert.Z)
-                        ));
+                    if (WorldAngle < Direction)
+                    {
+                        AngleOffset = 360 - Direction;
+                        ReletiveAngle = WorldAngle + AngleOffset;
+                    }
+                    else
+                    {
+                        AngleOffset = WorldAngle - Direction;
+                        ReletiveAngle = AngleOffset;
+                    }
+                    ReletiveAngle /= FOV;
+
+                    if (ReletiveAngle >= 0 && ReletiveAngle <= 1)
+                    {
+                        float HalfRenderHeight = (int)(180F / (Vector2.Distance(WorldPosition, new Vector2(Vert.X, Vert.Y)) / 100)) / 2;
+
+                        FaceScreenPositions.Last().Add(new Point(
+                            (int)(Screen.Dimentions.X * ReletiveAngle),
+                            (Screen.Dimentions.Y / 2) + (int)(HalfRenderHeight * Vert.Z)
+                            ));
+                    }
+                        
                 }
                 
             }
