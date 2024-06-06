@@ -32,7 +32,7 @@ namespace RaycasterEngine
                     {
                         if (random.Next(0, (int)settings.gridRandomPlaceChange) == 10)
                         {
-                            Color Color = Color.Red;
+                            Color Color = new Color(random.Next(-63, 63) * 4, random.Next(-63, 63) * 4, random.Next(-63, 63) * 4);
                             Slots.Last().Add(new GridSlot(new Point(x, y), Color));
                             SolidSlots.Add(Slots.Last().Last());
                         }
