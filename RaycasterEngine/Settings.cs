@@ -20,6 +20,7 @@ namespace RaycasterEngine
         public float cameraRotationSpeed { get; set; }
 
         public bool cameraWireFrameEfficientMode { get; set; }
+        public bool cameraFaceRenderFast { get; set; }
         
         public Point gridDimentions { get; set; }
         public bool gridRandomPopulated { get; set; }
@@ -40,6 +41,7 @@ namespace RaycasterEngine
             cameraRenderWireFrames = true;
             cameraWireFrameEfficientMode = true;
             cameraRenderFaces = true;
+            cameraFaceRenderFast = false;
 
 
             gridDimentions = new Point(1000, 1000);

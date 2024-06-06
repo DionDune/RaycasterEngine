@@ -39,9 +39,15 @@ namespace RaycasterEngine
             float CurrentAngle = 0;
 
             if (settings.cameraWireFrameEfficientMode)
+            {
                 if (settings.cameraRenderFaces)
-                    renderFaces(settings, spriteBatch, GraphicsDevice, Screen, Grid);
-
+                {
+                    if (settings.cameraFaceRenderFast)
+                        renderFacesFast(settings, spriteBatch, GraphicsDevice, Screen, Grid);
+                    else
+                        renderFaces(settings, spriteBatch, GraphicsDevice, Screen, Grid);
+                }
+            }
             else
                 for (int i = 0; i < RayCount; i++)
                 {
@@ -135,6 +141,55 @@ namespace RaycasterEngine
 
         private void renderFaces(Settings settings, SpriteBatch spriteBatch, GraphicsDevice GraphicsDevice, Screen Screen, Grid Grid)
         {
+            List<(GridSlot, float)> slotListOrdered = new List<(GridSlot, float)>();
+
+            // Add initial slot
+            if (Grid.SolidSlots.Count > 0)
+            {
+                slotListOrdered.Add((Grid.SolidSlots[0], Vector2.Distance(Grid.SolidSlots[0].Position.ToVector2(), WorldPosition)));
+            }
+            // Create list of slots, ordered from farthest to closest
+            for (int i = 1; i < Grid.SolidSlots.Count; i++)
+            {
+                float SlotDistance = Vector2.Distance(Grid.SolidSlots[i].Position.ToVector2(), WorldPosition);
+
+                for (int y = 0; y < slotListOrdered.Count; y++)
+                {
+                    if (SlotDistance < slotListOrdered[y].Item2 || SlotDistance == slotListOrdered[y].Item2 || y == slotListOrdered.Count - 1)
+                    {
+                        slotListOrdered.Insert(y,(Grid.SolidSlots[i], SlotDistance));
+                        break;
+                    }
+                }
+            }
+
+            // Render faces
+            for (int i = slotListOrdered.Count() - 1; i >= 0; i--)
+            {
+                List<List<Point>> Faces = GetFaces(Screen, slotListOrdered[i].Item1);
+
+                foreach (List<Point> Face in Faces)
+                {
+                    if (Face.Count == 3)
+                        Game1.DrawTriangle(Game1._basicEffect, GraphicsDevice, new Vector3(Face[0].X, Face[0].Y, 0),
+                                                                            new Vector3(Face[1].X, Face[1].Y, 0),
+                                                                            new Vector3(Face[2].X, Face[2].Y, 0), slotListOrdered[i].Item1.Color);
+                }
+
+                if (settings.cameraRenderWireFrames) 
+                    foreach (List<Point> Face in Faces)
+                    {
+                        if (Face.Count == 3)
+                        {
+                            Game1.DrawLineBetween(spriteBatch, Face[0].ToVector2(), Face[1].ToVector2(), Color.Pink, 1f);
+                            Game1.DrawLineBetween(spriteBatch, Face[0].ToVector2(), Face[2].ToVector2(), Color.Pink, 1f);
+                            Game1.DrawLineBetween(spriteBatch, Face[1].ToVector2(), Face[2].ToVector2(), Color.Pink, 1f);
+                        }
+                    }
+            }
+        }
+        private void renderFacesFast(Settings settings, SpriteBatch spriteBatch, GraphicsDevice GraphicsDevice, Screen Screen, Grid Grid)
+        {
             foreach (GridSlot Slot in Grid.SolidSlots)
             {
                 List<List<Point>> Faces = GetFaces(Screen, Slot);
@@ -147,7 +202,7 @@ namespace RaycasterEngine
                                                                             new Vector3(Face[2].X, Face[2].Y, 0), Slot.Color);
                 }
 
-                if (settings.cameraRenderWireFrames) 
+                if (settings.cameraRenderWireFrames)
                     foreach (List<Point> Face in Faces)
                     {
                         if (Face.Count == 3)
