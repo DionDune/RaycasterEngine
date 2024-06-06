@@ -40,7 +40,7 @@ namespace RaycasterEngine
         {
             random = new Random();
             settings = new Settings();
-            Grid = new Grid(settings.gridDimentions);
+            Grid = new Grid(settings);
             Screen = new Screen(new Point(_graphics.PreferredBackBufferWidth, _graphics.PreferredBackBufferHeight), _spriteBatch);
             Camera = new Camera(settings, new Vector2(50, 50));
 

@@ -22,6 +22,9 @@ namespace RaycasterEngine
         public bool cameraWireFrameEfficientMode { get; set; }
         
         public Point gridDimentions { get; set; }
+        public bool gridRandomPopulated { get; set; }
+        public uint gridRandomPlaceChange { get; set; }
+        public bool gridHadDefault { get; set; }
 
 
         public Settings()
@@ -40,6 +43,9 @@ namespace RaycasterEngine
 
 
             gridDimentions = new Point(1000, 1000);
+            gridRandomPopulated = true;
+            gridRandomPlaceChange = 1000;
+            gridHadDefault = true;
         }
     }
 }
