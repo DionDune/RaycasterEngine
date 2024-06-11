@@ -30,7 +30,7 @@ namespace RaycasterEngine
                     Slots.Add(new List<GridSlot>());
                     for (int x = 0; x < Dimentions.X; x++)
                     {
-                        if (random.Next(0, (int)settings.gridRandomPlaceChange) == 10)
+                        if (random.Next(0, (int)settings.gridRandomPlaceChange) == 0)
                         {
                             Color Color = new Color(random.Next(-63, 63) * 4, random.Next(-63, 63) * 4, random.Next(-63, 63) * 4);
                             Slots.Last().Add(new GridSlot(new Point(x, y), Color));
